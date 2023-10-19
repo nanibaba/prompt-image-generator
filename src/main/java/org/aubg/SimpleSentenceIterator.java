@@ -30,7 +30,8 @@ public class SimpleSentenceIterator extends BaseSentenceIterator {
 
     @Override
     public void finish() {
-        // Typically, you'd want to perform any necessary cleanup here, if required.
+        // No resources to close in this implementation.
+        // If future modifications involve resources, close/cleanup them here.
     }
 
     @Override

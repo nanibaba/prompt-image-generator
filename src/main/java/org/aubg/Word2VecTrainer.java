@@ -16,11 +16,8 @@ import org.nd4j.linalg.lossfunctions.LossFunctions;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Scanner;
 
-public class Word2VecExample {
-
-    // private static Logger log = LoggerFactory.getLogger(Word2VecExample.class);
+public class Word2VecTrainer {
 
     public static void main(String[] args) {
 
@@ -40,7 +37,7 @@ public class Word2VecExample {
         // Convert prompts to numerical data (e.g., using Word2Vec)
         // Note: This is a basic representation. For real-world tasks, a more elaborate setup would be required.
         Word2Vec vec = new Word2Vec.Builder()
-                .minWordFrequency(5)
+                .minWordFrequency(1)
                 .iterations(1)
                 .layerSize(100)
                 .seed(42)
@@ -60,7 +57,7 @@ public class Word2VecExample {
         }
 
         // Prepare input data for the model
-        INDArray input = Nd4j.zeros(prompts.size(), 100);
+        INDArray trainInput = Nd4j.zeros(prompts.size(), 100);
         for (int i = 0; i < prompts.size(); i++) {
             String[] words = prompts.get(i).split(" ");
             INDArray avgVec = Nd4j.zeros(100);
@@ -74,8 +71,8 @@ public class Word2VecExample {
             if (count > 0) {
                 avgVec.divi(count); // Average the vectors
             }
-            input.putRow(i, avgVec);
-        }
+            trainInput.putRow(i, avgVec);
+        }        
 
         // Create a basic neural network model
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
@@ -93,38 +90,15 @@ public class Word2VecExample {
         model.init();
 
         // Train the model
-        DataSet dataSet = new DataSet(input, labels);
+        DataSet dataSet = new DataSet(trainInput, labels);
         model.fit(dataSet);
 
-        Scanner promptInput = new Scanner(System.in); 
+        Prompter prompter = new Prompter();
+        INDArray promptInput = prompter.generateInput(vec);
 
-        System.out.print("Please enter a prompt: ");
-
-        String newPrompt = promptInput.nextLine();
-
-        // Tokenize and average the word vectors for the newPrompt
-        INDArray newInput = Nd4j.zeros(1, 100);  // 1 row for one sentence, and 100 for the word vector size
-        String[] words = newPrompt.split(" ");
-        INDArray avgVec = Nd4j.zeros(100);
-        int count = 0;
-    
-        for (String word : words) {
-            if (vec.hasWord(word)) {
-            avgVec.addi(vec.getWordVectorMatrix(word));
-            count++;
-        }
-    }
-        if (count > 0) {
-            avgVec.divi(count); // Average the vectors
-        }
-    
-        newInput.putRow(0, avgVec);
-        
-        INDArray prediction = model.output(newInput);
+        INDArray prediction = model.output(promptInput);
         int predictedClass = Nd4j.argMax(prediction, 1).getInt(0);
         String[] shapes = {"circle", "square", "triangle"};
         System.out.println("Predicted shape: " + shapes[predictedClass]);
-
-        promptInput.close();
     }
 }

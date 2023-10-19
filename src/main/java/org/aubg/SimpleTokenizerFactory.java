@@ -2,6 +2,7 @@ package org.aubg;
 
 import org.deeplearning4j.text.tokenization.tokenizer.Tokenizer;
 import org.deeplearning4j.text.tokenization.tokenizerfactory.TokenizerFactory;
+import org.deeplearning4j.text.tokenization.tokenizer.TokenPreProcess;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,6 +13,9 @@ import java.util.List;
 
 
 public class SimpleTokenizerFactory implements TokenizerFactory {
+
+    private TokenPreProcess tokenPreProcessor;
+
     @Override
     public Tokenizer create(String toTokenize) {
         return new SimpleTokenizer(toTokenize);
@@ -32,19 +36,20 @@ public class SimpleTokenizerFactory implements TokenizerFactory {
     }
 
     @Override
-    public void setTokenPreProcessor(org.deeplearning4j.text.tokenization.tokenizer.TokenPreProcess tokenPreProcessor) {
-        // Implement if required.
+    public void setTokenPreProcessor(TokenPreProcess tokenPreProcessor) {
+        this.tokenPreProcessor = tokenPreProcessor;
     }
 
     @Override
-    public org.deeplearning4j.text.tokenization.tokenizer.TokenPreProcess getTokenPreProcessor() {
-        return null; 
+    public TokenPreProcess getTokenPreProcessor() {
+        return this.tokenPreProcessor;
     }
 
     public class SimpleTokenizer implements Tokenizer {
 
         private String[] tokens;
         private int currentIdx = 0;
+        private TokenPreProcess tokenPreProcessor;
 
         public SimpleTokenizer(String toTokenize) {
             this.tokens = toTokenize.split(" ");
@@ -62,7 +67,11 @@ public class SimpleTokenizerFactory implements TokenizerFactory {
 
         @Override
         public String nextToken() {
-            return tokens[currentIdx++];
+            String token = tokens[currentIdx++];
+            if(tokenPreProcessor != null) {
+                token = tokenPreProcessor.preProcess(token);
+            }
+            return token;
         }
 
         @Override
@@ -71,8 +80,8 @@ public class SimpleTokenizerFactory implements TokenizerFactory {
         }
 
         @Override
-        public void setTokenPreProcessor(org.deeplearning4j.text.tokenization.tokenizer.TokenPreProcess tokenPreProcessor) {
-            // This can be expanded for token pre-processing.
+        public void setTokenPreProcessor(TokenPreProcess tokenPreProcessor) {
+            this.tokenPreProcessor = tokenPreProcessor;
         }
     }
 }
