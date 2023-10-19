@@ -23,17 +23,37 @@ public class Word2VecTrainer {
 
         // Sample data
         List<String> prompts = Arrays.asList(
-                "draw a circle",
-                "please draw a circle",
-                "I want a circle",
-                "draw a square",
-                "please draw a square",
-                "I want a square",
-                "draw a triangle",
-                "please draw a triangle",
-                "I want a triangle"
-        );
-
+            "pdraw a circle",
+        "sketch a circle for me",
+        "could you draw a circle?",
+        "I'd like to see a circle",
+        "please draw a circle",
+        "show me a circle drawing",
+        "circle please",
+        "I want a circle",
+        "make a circle on the screen",
+    
+        "draw a square",
+        "sketch a square for me",
+        "could you draw a square?",
+        "I'd like to see a square",
+        "please draw a square",
+        "show me a square drawing",
+        "square please",
+        "I want a square",
+        "make a square on the screen",
+    
+        "draw a triangle",
+        "sketch a triangle for me",
+        "could you draw a triangle?",
+        "I'd like to see a triangle",
+        "please draw a triangle",
+        "show me a triangle drawing",
+        "triangle please",
+        "I want a triangle",
+        "make a triangle on the screen"
+    );
+    
         // Convert prompts to numerical data (e.g., using Word2Vec)
         // Note: This is a basic representation. For real-world tasks, a more elaborate setup would be required.
         Word2Vec vec = new Word2Vec.Builder()
