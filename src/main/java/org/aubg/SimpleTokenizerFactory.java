@@ -10,15 +10,15 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
-
-
 public class SimpleTokenizerFactory implements TokenizerFactory {
 
     private TokenPreProcess tokenPreProcessor;
 
     @Override
     public Tokenizer create(String toTokenize) {
-        return new SimpleTokenizer(toTokenize);
+        SimpleTokenizer tokenizer = new SimpleTokenizer(toTokenize);
+        tokenizer.setTokenPreProcessor(this.tokenPreProcessor);
+        return tokenizer;
     }
 
     @Override
@@ -52,7 +52,7 @@ public class SimpleTokenizerFactory implements TokenizerFactory {
         private TokenPreProcess tokenPreProcessor;
 
         public SimpleTokenizer(String toTokenize) {
-            this.tokens = toTokenize.split(" ");
+            this.tokens = (toTokenize == null) ? new String[0] : toTokenize.split(" ");
         }
 
         @Override

@@ -15,7 +15,12 @@ public class SimpleSentenceIterator extends BaseSentenceIterator {
 
     @Override
     public String nextSentence() {
-        return sentences.get(currentIdx++);
+        // Ensure there's a next sentence to prevent out of bounds exceptions
+        if (hasNext()) {
+            return sentences.get(currentIdx++);
+        } else {
+            return null; // or you can throw an exception based on your requirements
+        }
     }
 
     @Override
