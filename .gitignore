@@ -61,3 +61,5 @@ Word2vec-index/
 arbiterExample/
 dl4j-examples/*.zip
 
+/src/main/resources/GoogleNews-vectors-negative300.bin.gz
+
