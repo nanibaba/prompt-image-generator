@@ -1,6 +1,9 @@
 package org.aubg;
 
+import org.deeplearning4j.models.embeddings.loader.WordVectorSerializer;
 import org.deeplearning4j.models.word2vec.Word2Vec;
+
+/*
 import org.deeplearning4j.nn.api.OptimizationAlgorithm;
 import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
@@ -12,88 +15,58 @@ import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
+*/
 
 import java.util.Scanner;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.io.File;
+import java.io.IOException;
 
 public class Word2VecTrainer {
-
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
         // Possible shapes list 
         List<String> shapes = Arrays.asList(
-            "circle", "square", "triangle", "oval", "pentagon", 
-            "hexagon", "octagon", "star", "diamond", "heart", 
-            "crescent", "parallelogram", "rhombus", "ellipse"
+            "circle", "square", "triangle"
         );
 
-    // Possible prompts list
-    List<String> prompts = new ArrayList<>();
-    for(String shape : shapes) {
-        prompts.addAll(Arrays.asList(
-            "Please draw a " + shape, 
-            "draw a " + shape,
-            shape + " please",
-            "paint a " + shape,
-            "illustrate a " + shape,
-            "depict a " + shape,
-            "show me a " + shape,
-            "lemme see a " + shape,
-            "could you possibly draw a " + shape + "?",
-            "can you try to sketch a " + shape + "?",
-            "would you mind sketching a " + shape + "?",
-            "how about drawing a big " + shape + "?",
-            "think you can paint a small " + shape + "?",
-            "any chance you can illustrate a colored " + shape + "?",
-            "do you know how to draw a " + shape + "?",
-            "ever tried drawing a " + shape + "?",
-            "hey! draw a " + shape + " for me.",
-            "wow, show me a giant " + shape + "!",
-            "by the way, can you draw a tiny " + shape + "?",
-            "oh, and sketch a " + shape + ".",
-            "while you're at it, depict a " + shape + "."
-        ));
-    }
+        long startTime = System.currentTimeMillis();
 
-        // Convert shapes to numerical data
-        Word2Vec shapeVec = new Word2Vec.Builder()
-                .minWordFrequency(1)
-                .iterations(1)
-                .layerSize(50)
-                .seed(42)
-                .windowSize(5)
-                .iterate(new SimpleSentenceIterator(shapes))
-                .tokenizerFactory(new SimpleTokenizerFactory())
-                .build();
-                
-        shapeVec.fit();
+        File gModel = new File("src/main/resources/GoogleNews-vectors-negative300.bin.gz");
 
-        INDArray shapeInput = Nd4j.zeros(shapes.size(), 50);
-        
-        for (int i = 0; i < shapes.size(); i++) {
-            String shape = shapes.get(i);
-            if (shapeVec.hasWord(shape)) {
-                INDArray avgShapeVec = shapeVec.getWordVectorMatrix(shape);
-                shapeInput.putRow(i, avgShapeVec);
-            }
+        Word2Vec dictVec = WordVectorSerializer.readWord2VecModel(gModel);
+
+        long loadTime = System.currentTimeMillis() - startTime;
+
+        System.out.println("Time to load Google News Data: " + loadTime + "ms");
+
+        Scanner promptInput = new Scanner(System.in); 
+        System.out.print("Please enter a prompt: ");
+        String prompt = promptInput.nextLine();
+        String[] promptWords = prompt.split(" ");
+
+        List<String> closestToShape = Arrays.asList();
+
+        for (String word : promptWords){
+             Collection<String> closest = dictVec.wordsNearest(word, 1);
+             if (closest.size() > 0) {
+                System.out.println(closest);
+                System.out.println(closest.toArray()[0]);
+             }
+             
+             /* for (String closeWord : closest){
+             double cosSim = promptsVec.similarity(word, closeWord);
+             System.out.println(cosSim);
+            }  */
         }
-        
-         // Convert prompts to numerical data
-        Word2Vec promptsVec = new Word2Vec.Builder()
-                .minWordFrequency(1)
-                .iterations(1)
-                .layerSize(50)
-                .seed(42)
-                .windowSize(5)
-                .iterate(new SimpleSentenceIterator(prompts))
-                .tokenizerFactory(new SimpleTokenizerFactory())
-                .build();
 
-        promptsVec.fit();
+        System.out.println(closestToShape);
 
-        // Create a basic neural network model
+        promptInput.close();
+
+        /* // Create a basic neural network model
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
                 .weightInit(WeightInit.XAVIER)
                 .activation(Activation.RELU)
@@ -157,17 +130,17 @@ public class Word2VecTrainer {
     
         String[] possibleShapes = new String[shapes.size()];
     
-        System.out.println("Predicted shape: " + shapes.toArray(possibleShapes)[predictedClass]);
+        System.out.println("Predicted shape: " + shapes.toArray(possibleShapes)[predictedClass]); */
 
     }
 
     // Utility method to get the corresponding shape for a given prompt
-    private static String getShapeForPrompt(String prompt, List<String> shapes) {
+   /*  private static String getShapeForPrompt(String prompt, List<String> shapes) {
         for (String shape : shapes) {
             if (prompt.contains(shape)) {
                 return shape;
             }
         }
         return "";
-    }
+    } */
 }
