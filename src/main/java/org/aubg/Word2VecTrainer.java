@@ -19,13 +19,14 @@ import org.nd4j.linalg.lossfunctions.LossFunctions;
 
 import java.util.Scanner;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.io.File;
 import java.io.IOException;
 
 public class Word2VecTrainer {
     public static void main(String[] args) throws IOException {
+
+        Scanner promptInput = new Scanner(System.in); 
 
         // Possible shapes list 
         List<String> shapes = Arrays.asList(
@@ -42,28 +43,45 @@ public class Word2VecTrainer {
 
         System.out.println("Time to load Google News Data: " + loadTime + "ms");
 
-        Scanner promptInput = new Scanner(System.in); 
         System.out.print("Please enter a prompt: ");
         String prompt = promptInput.nextLine();
         String[] promptWords = prompt.split(" ");
 
-        List<String> closestToShape = Arrays.asList();
+        while (!prompt.equals("stop")) {
+            
+            double cosSim = 0;
+            double maxCosSin = 0;
+            String targetShape = ""; 
+            
+            for (String word : promptWords) {
+                for (String shape : shapes) {
+                    cosSim = dictVec.similarity(word, shape);
+                    if (cosSim == 1.0) {
+                        maxCosSin = cosSim;
+                        targetShape = shape;
+                        break; 
+                    }
+                    else if (cosSim >= maxCosSin)
+                        maxCosSin = cosSim;
+                        targetShape = shape; 
+                    }
 
-        for (String word : promptWords){
-             Collection<String> closest = dictVec.wordsNearest(word, 1);
-             if (closest.size() > 0) {
-                System.out.println(closest);
-                System.out.println(closest.toArray()[0]);
-             }
-             
-             /* for (String closeWord : closest){
-             double cosSim = promptsVec.similarity(word, closeWord);
-             System.out.println(cosSim);
-            }  */
-        }
+                    System.out.println(maxCosSin);
+                    System.out.println(targetShape);
 
-        System.out.println(closestToShape);
+                    if (cosSim == 1.0) {
+                        break;
+                    }
+            }
+        System.out.println(dictVec.similarity("cirlce", "circle"));
+        System.out.println(dictVec.similarity("cirlce", "square"));
+        System.out.println(dictVec.similarity("cirlce", "triangle"));
 
+        System.out.print("Please enter a prompt: ");
+        prompt = promptInput.nextLine();
+        promptWords = prompt.split(" ");
+
+    }
         promptInput.close();
 
         /* // Create a basic neural network model
