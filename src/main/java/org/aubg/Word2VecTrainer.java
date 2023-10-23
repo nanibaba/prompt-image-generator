@@ -50,19 +50,19 @@ public class Word2VecTrainer {
         while (!prompt.equals("stop")) {
             
             double cosSim = 0;
-            double maxCosSin = 0;
+            double maxCosSim = cosSim;
             String targetShape = ""; 
             
             for (String word : promptWords) {
                 for (String shape : shapes) {
                     cosSim = dictVec.similarity(word, shape);
                     if (cosSim == 1.0) {
-                        maxCosSin = cosSim;
+                        maxCosSim = cosSim;
                         targetShape = shape;
                         break; 
                     }
-                    else if (cosSim >= maxCosSin) {
-                        maxCosSin = cosSim;
+                    else if (cosSim >= maxCosSim) {
+                        maxCosSim = cosSim;
                         targetShape = shape; 
                     }
                 }
