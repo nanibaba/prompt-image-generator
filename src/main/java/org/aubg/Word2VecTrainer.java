@@ -61,21 +61,18 @@ public class Word2VecTrainer {
                         targetShape = shape;
                         break; 
                     }
-                    else if (cosSim >= maxCosSin)
+                    else if (cosSim >= maxCosSin) {
                         maxCosSin = cosSim;
                         targetShape = shape; 
                     }
-
-                    System.out.println(maxCosSin);
-                    System.out.println(targetShape);
-
-                    if (cosSim == 1.0) {
-                        break;
-                    }
+                }
+                
+                if (cosSim == 1.0) {
+                    break;
+                }
             }
-        System.out.println(dictVec.similarity("cirlce", "circle"));
-        System.out.println(dictVec.similarity("cirlce", "square"));
-        System.out.println(dictVec.similarity("cirlce", "triangle"));
+
+        System.out.println("Target shape: " + targetShape);
 
         System.out.print("Please enter a prompt: ");
         prompt = promptInput.nextLine();
