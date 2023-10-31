@@ -10,7 +10,6 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class PatternRecognizer {
-
     // Function to calculate the Levenshtein Distance
     public static int levenshteinDistance(String a, String b) {
         int[][] dp = new int[a.length() + 1][b.length() + 1];
@@ -22,7 +21,9 @@ public class PatternRecognizer {
                 } else if (j == 0) {
                     dp[i][j] = i;
                 } else {
-                    dp[i][j] = Math.min(Math.min(dp[i - 1][j - 1] + (a.charAt(i - 1) == b.charAt(j - 1) ? 0 : 1), dp[i - 1][j] + 1), dp[i][j - 1] + 1);
+                    dp[i][j] = Math.min(Math.min(dp[i - 1][j - 1] + 
+                    (a.charAt(i - 1) == b.charAt(j - 1) ? 0 : 1), 
+                    dp[i - 1][j] + 1), dp[i][j - 1] + 1);
                 }
             }
         }
@@ -62,49 +63,64 @@ public class PatternRecognizer {
         return objects;
     }
 
-    public static void main(String[] args) throws IOException {
-
-        // Reading a file containing a list of possible shapes  
-        List<String> shapes = readObjectsFromFile("src/main/resources/shapes.txt");
-
-        Word2Vec dictVec = Word2VecLoader.loadDictVec();
-
-        String prompt = Prompter.inputPrompt(); 
-        Collection<String> promptWords = Prompter.separatePromptWords(prompt);
-
-        int maxEditDistance = 4; // Max allowable edit distance for spell checking
-
-        while (!prompt.equals("stop")) {
-            
+    public static void computeTargetObject(
+            String type, Collection<String> promptWords, 
+            List<String> objects, Word2Vec dictVec) {
+            int maxEditDistance = 2; // Max allowable edit distance for spell checking
             double cosSim = 0;
             double maxCosSim = cosSim;
-            String targetShape = "";
+            String targetObject = "";
 
             for (String word : promptWords) {
                 // Spell check the word
-                String correctedWord = findClosestObject(word, shapes, maxEditDistance);
+                String correctedWord = findClosestObject(word, objects, maxEditDistance);
+                System.out.println("Corrected word: " + correctedWord);
 
-                for (String shape : shapes) {
-                    cosSim = dictVec.similarity(correctedWord, shape);
+                for (String object : objects) {
+                    cosSim = dictVec.similarity(correctedWord, object);
+                    System.out.println("Cosine similarity: " + cosSim); 
                     if (cosSim >= maxCosSim) {
                         maxCosSim = cosSim;
-                        targetShape = shape;
+                        targetObject = object;
                     }
                 }
+
             }
 
-
-        if (!targetShape.isEmpty()) {
-                System.out.println("Target shape: " + targetShape); 
+            if (!targetObject.isEmpty()) {
+                List<String> promptPhrases = new ArrayList<String>(promptWords);
+                String selectedWord = findClosestObject(targetObject, promptPhrases, maxEditDistance);
+                promptWords.remove(selectedWord);
+                System.out.println("Target " + type + ": " + targetObject); 
             } else {
-                System.out.println("No matching shape found.");
+                System.out.println("No matching " + type + " found.");
             }
+    }
 
-        prompt = Prompter.inputPrompt(); 
-        promptWords = Prompter.separatePromptWords(prompt);
+    public static void main(String[] args) throws IOException {
+        // Reading a file containing a list of possible shapes  
+        List<String> shapes = readObjectsFromFile("src/main/resources/shapes.txt");
+        // Reading a file containing a list of possible colors
+        List<String> colors = readObjectsFromFile("src/main/resources/colors.txt");
 
-        }
+        Word2Vec dictVec = Word2VecLoader.loadDictVec();
+        String prompt = Prompter.inputPrompt(); 
+        Collection<String> promptWords = Prompter.separatePromptWords(prompt);
         
+        while (!prompt.equals("stop")) {
+            // Output for target shape 
+            computeTargetObject("shape", promptWords, shapes, dictVec);
+
+            System.out.println("Remaining prompt words: " + promptWords);
+
+            // Output for target color
+            computeTargetObject("color", promptWords, colors, dictVec);
+
+            System.out.println("Remaining prompt words: " + promptWords);
+
+            prompt = Prompter.inputPrompt(); 
+            promptWords = Prompter.separatePromptWords(prompt);
+        }
         Prompter.closeInput();
     }
 }

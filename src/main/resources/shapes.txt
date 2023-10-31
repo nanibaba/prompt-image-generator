@@ -1,4 +1,4 @@
-circle, square, triangle, rectangle, pentagon, hexagon, heptagon, 
-octagon, nonagon, decagon, ellipse, parallelogram, rhombus, trapezoid, 
-oval, star, diamond, heart, crescent, cross, sphere, cube, cylinder, 
-cone, pyramid, prism, arrow, parallelepiped
+circle, square, triangle, rectangle, pentagon, hexagon, 
+octagon, ellipse, parallelogram, rhombus, trapezoid, 
+oval, star, diamond, heart, crescent, cross, sphere, 
+cube, cylinder, cone, pyramid, prism, arrow

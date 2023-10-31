@@ -1,0 +1,10 @@
+
+red, blue, green, yellow, orange, purple, pink, brown, black, white, 
+gray, cyan, magenta, teal, maroon, olive, navy, lavender, beige, 
+turquoise, crimson, indigo, violet, gold, silver, lime, charcoal, 
+coral, khaki, emerald, sapphire, ruby, fuchsia, mint, ivory, 
+bronze, burgundy, aqua, amber, mauve, periwinkle, ochre, sienna, 
+cerulean, tan, taupe, salmon, plum, jade, cobalt, ash, mustard, 
+raspberry, rose, ultramarine, lemon, azure, pearl, tangerine, 
+forest green, sky blue, champagne, copper, moss, lavender blush, 
+seafoam, wheat, eggplant, sepia
