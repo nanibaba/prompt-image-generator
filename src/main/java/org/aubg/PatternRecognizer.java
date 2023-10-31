@@ -97,7 +97,7 @@ public class PatternRecognizer {
             }
     }
 
-    public static void main(String[] args) throws IOException {
+    /* public static void main(String[] args) throws IOException {
         // Reading a file containing a list of possible shapes  
         List<String> shapes = readObjectsFromFile("src/main/resources/shapes.txt");
         // Reading a file containing a list of possible colors
@@ -122,5 +122,5 @@ public class PatternRecognizer {
             promptWords = Prompter.separatePromptWords(prompt);
         }
         Prompter.closeInput();
-    }
+    } */
 }
