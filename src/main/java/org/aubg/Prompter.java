@@ -15,8 +15,6 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.deeplearning4j.models.word2vec.Word2Vec;
-import org.deeplearning4j.text.stopwords.StopWords;
-
 public class Prompter {
     
     private static final Pattern charsPunctuationPattern = Pattern.compile("[\\d:,\"\'\\`\\_\\|?!\n\r@;]+");
@@ -107,6 +105,8 @@ public class Prompter {
                     }
 
                     else {
+                        // Set drawing shape 
+                        drawingPanel.setDrawingShape(targetShape);
                         // Output for target color
                         targetColor = PatternRecognizer.computeTargetObject("color", promptWords, colors, dictVec);
                         System.out.println("Remaining prompt words: " + promptWords);
@@ -119,7 +119,7 @@ public class Prompter {
                             drawingPanel.setDrawingColor(new Color(r, g, b));
                         }
 
-                        drawingPanel.drawCircle();
+                        drawingPanel.drawShape();
                     }
                 }
             }
