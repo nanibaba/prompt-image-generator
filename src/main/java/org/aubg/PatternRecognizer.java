@@ -63,7 +63,7 @@ public class PatternRecognizer {
         return objects;
     }
 
-    public static void computeTargetObject(
+    public static String computeTargetObject(
             String type, Collection<String> promptWords, 
             List<String> objects, Word2Vec dictVec) {
             int maxEditDistance = 2; // Max allowable edit distance for spell checking
@@ -95,5 +95,7 @@ public class PatternRecognizer {
             } else {
                 System.out.println("No matching " + type + " found.");
             }
+
+            return targetObject;
     }
 }

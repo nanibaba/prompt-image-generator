@@ -1,7 +1,8 @@
 package org.aubg;
 
 import javax.swing.*;
-import java.awt.*;
+import javax.swing.border.EmptyBorder;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -54,6 +55,11 @@ public class Prompter {
         promptField.setText(placeholderText); 
         frame.add(promptField);
 
+        DrawingPanel drawingPanel = new DrawingPanel();
+        drawingPanel.setBounds(10, 90, 300, 150);
+        drawingPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
+        frame.add(drawingPanel);
+
         promptField.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
@@ -80,16 +86,41 @@ public class Prompter {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String promptText = promptField.getText();
-                if (!promptText.equals(placeholderText)) {
+                String targetShape = "";
+                String targetColor = "";
+
+                if (promptText.equals(placeholderText)) {
+                    JOptionPane.showMessageDialog(frame, "Please enter a valid prompt", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                else {
                     Collection<String> promptWords = separatePromptWords(promptText);
 
                     // Output for target shape 
-                    PatternRecognizer.computeTargetObject("shape", promptWords, shapes, dictVec);
+                    targetShape = PatternRecognizer.computeTargetObject("shape", promptWords, shapes, dictVec);
                     System.out.println("Remaining prompt words: " + promptWords);
 
-                     // Output for target color
-                    PatternRecognizer.computeTargetObject("color", promptWords, colors, dictVec);
-                    System.out.println("Remaining prompt words: " + promptWords);
+                    if (targetShape.isEmpty()) {
+                        JOptionPane.showMessageDialog(frame, "No matching shape found.", "Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+
+                    else {
+                        // Output for target color
+                        targetColor = PatternRecognizer.computeTargetObject("color", promptWords, colors, dictVec);
+                        System.out.println("Remaining prompt words: " + promptWords);
+
+                        if (!targetColor.isEmpty()) {
+                            ColorCodeGenerator colorCodeGenerator = new ColorCodeGenerator(targetColor);
+                            int r = colorCodeGenerator.redValue;
+                            int g = colorCodeGenerator.greenValue;
+                            int b = colorCodeGenerator.blueValue;
+                            drawingPanel.setDrawingColor(new Color(r, g, b));
+                        }
+
+                        drawingPanel.drawCircle();
+                    }
                 }
             }
         });
