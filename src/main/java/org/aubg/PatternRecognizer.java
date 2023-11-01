@@ -96,31 +96,4 @@ public class PatternRecognizer {
                 System.out.println("No matching " + type + " found.");
             }
     }
-
-    /* public static void main(String[] args) throws IOException {
-        // Reading a file containing a list of possible shapes  
-        List<String> shapes = readObjectsFromFile("src/main/resources/shapes.txt");
-        // Reading a file containing a list of possible colors
-        List<String> colors = readObjectsFromFile("src/main/resources/colors.txt");
-
-        Word2Vec dictVec = Word2VecLoader.loadDictVec();
-        String prompt = Prompter.inputPrompt(); 
-        Collection<String> promptWords = Prompter.separatePromptWords(prompt);
-        
-        while (!prompt.equals("stop")) {
-            // Output for target shape 
-            computeTargetObject("shape", promptWords, shapes, dictVec);
-
-            System.out.println("Remaining prompt words: " + promptWords);
-
-            // Output for target color
-            computeTargetObject("color", promptWords, colors, dictVec);
-
-            System.out.println("Remaining prompt words: " + promptWords);
-
-            prompt = Prompter.inputPrompt(); 
-            promptWords = Prompter.separatePromptWords(prompt);
-        }
-        Prompter.closeInput();
-    } */
 }

@@ -1,31 +1,44 @@
 package org.aubg;
 
-// import java.util.Arrays;
-// import java.util.Collection;
-// import java.util.regex.Pattern;
-// import java.util.stream.Collectors;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-// import org.deeplearning4j.text.stopwords.StopWords;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
+import org.deeplearning4j.models.word2vec.Word2Vec;
+import org.deeplearning4j.text.stopwords.StopWords;
 
 public class Prompter {
-
+    
+    private static final Pattern charsPunctuationPattern = Pattern.compile("[\\d:,\"\'\\`\\_\\|?!\n\r@;]+");
     private JFrame frame;
     private JTextField promptField;
     private JLabel promptLabel;
     private JButton submitButton;
-    
+    private final String placeholderText = "Please enter a prompt";
+
     public Prompter() {
         initialize();
     }
 
     private void initialize() {
+
+        // Reading a file containing a list of possible shapes  
+        List<String> shapes = PatternRecognizer.readObjectsFromFile("src/main/resources/shapes.txt");
+
+        // Reading a file containing a list of possible colors
+        List<String> colors = PatternRecognizer.readObjectsFromFile("src/main/resources/colors.txt");
+
+        Word2Vec dictVec = Word2VecLoader.loadDictVec();
+
         frame = new JFrame();
         frame.setBounds(100, 100, 450, 300);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -35,16 +48,16 @@ public class Prompter {
         promptLabel.setBounds(10, 10, 80, 25);
         frame.add(promptLabel);
 
-        promptField = new JTextField("Please enter a prompt");
+        promptField = new JTextField();
         promptField.setForeground(Color.GRAY);
         promptField.setBounds(100, 10, 200, 25);
-        promptField.setFocusable(false);
+        promptField.setText(placeholderText); 
         frame.add(promptField);
 
         promptField.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
-                if (promptField.getText().equals("Please enter a prompt")) {
+                if (promptField.getText().equals(placeholderText)) {
                     promptField.setText("");
                     promptField.setForeground(Color.BLACK);
                 }
@@ -54,15 +67,8 @@ public class Prompter {
             public void focusLost(FocusEvent e) {
                 if (promptField.getText().isEmpty()) {
                     promptField.setForeground(Color.GRAY);
-                    promptField.setText("Please enter a prompt");
+                    promptField.setText(placeholderText);
                 }
-            }
-        });
-
-        frame.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowOpened(WindowEvent e) {
-                promptField.setFocusable(true);
             }
         });
 
@@ -74,24 +80,20 @@ public class Prompter {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String promptText = promptField.getText();
-                if (!promptText.equals("Please enter a prompt")) {
-                    System.out.println("Entered Prompt: " + promptText);
+                if (!promptText.equals(placeholderText)) {
+                    Collection<String> promptWords = separatePromptWords(promptText);
+
+                    // Output for target shape 
+                    PatternRecognizer.computeTargetObject("shape", promptWords, shapes, dictVec);
+                    System.out.println("Remaining prompt words: " + promptWords);
+
+                     // Output for target color
+                    PatternRecognizer.computeTargetObject("color", promptWords, colors, dictVec);
+                    System.out.println("Remaining prompt words: " + promptWords);
                 }
             }
         });
     }
-
-    public void show() {
-        frame.setVisible(true);
-    }
-
-   /*  private static final Pattern charsPunctuationPattern = Pattern.compile("[\\d:,\"\'\\`\\_\\|?!\n\r@;]+");
-
-        static String inputPrompt() { 
-        System.out.print("Please enter a prompt: ");
-        String prompt = promptInput.nextLine();
-        return prompt; 
-    } 
 
     static Collection<String> separatePromptWords(String prompt) {
         String input_text = charsPunctuationPattern.matcher(prompt.trim().toLowerCase()).replaceAll("");
@@ -109,8 +111,12 @@ public class Prompter {
 
         return words;
     } 
-    */
-    public static void main(String[] args) {
+
+    public void show() {
+        frame.setVisible(true);
+    }
+   
+    public static void main(String[] args) throws IOException {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
