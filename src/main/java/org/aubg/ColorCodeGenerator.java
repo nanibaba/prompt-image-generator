@@ -4,20 +4,28 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ColorCodeGenerator {
+    // Public fields for red, green, and blue color values
     public int redValue; 
     public int greenValue;
     public int blueValue; 
+    // Private static field to hold the color code
     private static String[] colorCode; 
 
+    // Constructor that initializes the color code and RGB values
     public ColorCodeGenerator(String color) {
+        // Generate color code based on the input color
         colorCode = generateColorCode(color);
+        // Parse and assign RGB values from the color code
         this.redValue = Integer.parseInt(colorCode[0]);
         this.greenValue = Integer.parseInt(colorCode[1]);
         this.blueValue = Integer.parseInt(colorCode[2]);
     }
 
+    // Static method to generate color code based on the color name
     public static String[] generateColorCode(String color){
+        // Map to store predefined color names and their corresponding RGB codes
         Map<String, String> colorCodes = new HashMap<>();
+        // Adding predefined colors and their RGB codes to the map
         colorCodes.put("red", "255, 0, 0");
         colorCodes.put("blue", "0, 0, 255");
         colorCodes.put("green", "0, 128, 0");
@@ -84,8 +92,10 @@ public class ColorCodeGenerator {
         colorCodes.put("eggplant", "97, 64, 81");
         colorCodes.put("sepia", "112, 66, 20");
 
+        // Get the RGB code for the given color name
         String targetCode = colorCodes.get(color); 
 
+        // Split the RGB code into individual color values
         return targetCode.split(", ");
     }
 }

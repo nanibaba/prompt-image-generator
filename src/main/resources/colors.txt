@@ -1,4 +1,3 @@
-
 red, blue, green, yellow, orange, purple, pink, brown, black, white, 
 gray, cyan, magenta, teal, maroon, olive, navy, lavender, beige, 
 turquoise, crimson, indigo, violet, gold, silver, lime, charcoal, 

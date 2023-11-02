@@ -10,8 +10,10 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public abstract class PatternRecognizer {
-    // Function to calculate the Levenshtein Distance
+    
+    // Function to calculate the Levenshtein Distance between two strings
     public static int levenshteinDistance(String a, String b) {
+        // Initialize a 2D array for dynamic programming
         int[][] dp = new int[a.length() + 1][b.length() + 1];
 
         for (int i = 0; i <= a.length(); i++) {
@@ -21,6 +23,7 @@ public abstract class PatternRecognizer {
                 } else if (j == 0) {
                     dp[i][j] = i;
                 } else {
+                    // Calculate the minimum number of operations needed
                     dp[i][j] = Math.min(Math.min(dp[i - 1][j - 1] + 
                     (a.charAt(i - 1) == b.charAt(j - 1) ? 0 : 1), 
                     dp[i - 1][j] + 1), dp[i][j - 1] + 1);
@@ -31,11 +34,12 @@ public abstract class PatternRecognizer {
         return dp[a.length()][b.length()];
     }
 
-    // Function to find the closest object
+    // Function to find the closest object to a given word based on Levenshtein Distance
     public static String findClosestObject(String word, List<String> objects, int maxDistance) {
         String closestObject = "";
         int minDistance = maxDistance;
 
+        // Iterate through the objects and find the one with the minimum distance
         for (String object : objects) {
             int distance = levenshteinDistance(word, object);
             if (distance < minDistance) {
@@ -47,10 +51,12 @@ public abstract class PatternRecognizer {
         return closestObject;
     }
 
+    // Function to read objects from a file and return them as a list
     public static List<String> readObjectsFromFile(String fileName) {
         List<String> objects = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
             String line;
+            // Read each line from the file
             while ((line = reader.readLine()) != null) {
                 String[] objectArray = line.split(", ");
                 for (String object : objectArray) {
@@ -63,6 +69,7 @@ public abstract class PatternRecognizer {
         return objects;
     }
 
+    // Function to compute the target object from a collection of prompt words
     public static String computeTargetObject(
             String type, Collection<String> promptWords, 
             List<String> objects, Word2Vec dictVec) {
@@ -77,6 +84,7 @@ public abstract class PatternRecognizer {
                 System.out.println("Corrected word: " + correctedWord);
 
                 for (String object : objects) {
+                    // Calculate the cosine similarity between the corrected word and object
                     cosSim = dictVec.similarity(correctedWord, object);
                     System.out.println("Cosine similarity: " + cosSim); 
                     if (cosSim >= maxCosSim) {
@@ -84,9 +92,9 @@ public abstract class PatternRecognizer {
                         targetObject = object;
                     }
                 }
-
             }
 
+            // If a target object is found, remove the closest word from the prompt words
             if (!targetObject.isEmpty()) {
                 List<String> promptPhrases = new ArrayList<String>(promptWords);
                 String selectedWord = findClosestObject(targetObject, promptPhrases, maxEditDistance);
