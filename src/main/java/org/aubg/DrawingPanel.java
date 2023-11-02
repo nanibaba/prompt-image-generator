@@ -8,10 +8,14 @@ public class DrawingPanel extends JPanel {
 
     private Color color; 
     private String shape;
+    private Color currentColor;
+    private String currentShape; 
 
     public DrawingPanel() {
         this.color = Color.WHITE;
         this.shape = "";
+        this.currentColor = color;
+        this.currentShape = shape;
     }
 
     public void setDrawingColor(Color color) {
@@ -23,6 +27,12 @@ public class DrawingPanel extends JPanel {
     }
 
     public void drawShape() {
+        currentColor = color;
+        currentShape = shape;
+
+        // Reset color and shape to default values
+        color = Color.WHITE;
+        shape = "";
         repaint();
     }
 
@@ -31,9 +41,9 @@ public class DrawingPanel extends JPanel {
         super.paintComponent(g);
 
         // Setting shape color
-        g.setColor(color);
+        g.setColor(currentColor);
 
-        if (shape.equals("circle")) {
+        if (currentShape.equals("circle")) {
             // Calculate the circle's coordinates and size
             int x = (getWidth() - 100) / 2;
             int y = (getHeight() - 100) / 2;
@@ -41,7 +51,7 @@ public class DrawingPanel extends JPanel {
             // Draw the circle
             g.fillOval(x, y, 100, 100);
 
-        } else if (shape.equals("triangle")) {
+        } else if (currentShape.equals("triangle")) {
             // Calculate the triangle's coordinates
             int x1 = getWidth() / 2;
             int y1 = (getHeight() - 100) / 2;
@@ -58,7 +68,7 @@ public class DrawingPanel extends JPanel {
             int nPoints = 3;
             g.fillPolygon(xPoints, yPoints, nPoints);
 
-        } else if (shape.equals("square")) {
+        } else if (currentShape.equals("square")) {
              // Calculate the square's coordinates and size
              int x = (getWidth() - 100) / 2;
              int y = (getHeight() - 100) / 2;
@@ -66,9 +76,5 @@ public class DrawingPanel extends JPanel {
              // Draw the square
              g.fillRect(x, y, 100, 100);
         }
-        
-        // Reset color and shape
-        color = Color.WHITE;
-        shape = "";
     }
 }
