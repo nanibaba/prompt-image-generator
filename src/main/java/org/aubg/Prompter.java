@@ -100,6 +100,7 @@ public class Prompter {
                 String promptText = promptField.getText();
                 String targetShape = "";
                 String targetColor = "";
+                String targetClass = "";
 
                 // Validate the prompt text
                 if (promptText.equals(placeholderText)) {
@@ -116,9 +117,9 @@ public class Prompter {
                         JOptionPane.showMessageDialog(frame, "No matching shape found.", "Error", JOptionPane.ERROR_MESSAGE);
                         return;
                     } else {
-                        // Set drawing shape
-                        drawingPanel.setDrawingShape(targetShape);
-
+                        targetClass = "org.aubg.shapes." + 
+                        targetShape.substring(0, 1).toUpperCase() + 
+                        targetShape.substring(1); 
                         // Find target color from the prompt
                         targetColor = PatternRecognizer.computeTargetObject("color", promptWords, colors, dictVec);
                         System.out.println("Remaining prompt words: " + promptWords);
@@ -132,8 +133,8 @@ public class Prompter {
                             drawingPanel.setDrawingColor(new Color(r, g, b));
                         }
 
-                        // Draw the shape
-                        drawingPanel.drawShape();
+                       // Set and draw the shape
+                       drawingPanel.setDrawingShape(targetClass);
                     }
                 }
             }

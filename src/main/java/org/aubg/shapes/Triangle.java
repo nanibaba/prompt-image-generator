@@ -3,18 +3,16 @@ package org.aubg.shapes;
 import java.awt.Color;
 import java.awt.Graphics;
 
-public class Triangle implements Shape {
-    private Color color; 
-
+public class Triangle extends Shape {
     public Triangle(Color color) {
-        this.color = color;
+        super(color);
     }
 
     @Override
-    public void draw(Graphics g, int width, int height) {
+    public void draw(Graphics g) {
         g.setColor(color);
-        int x1 = width / 2;
-        int y1 = (height - 100) / 2;
+        int x1 = 150;
+        int y1 = 25;
         int x2 = x1 - 50;
         int y2 = y1 + 100;
         int x3 = x1 + 50;

@@ -3,18 +3,17 @@ package org.aubg.shapes;
 import java.awt.Color;
 import java.awt.Graphics;
 
-public class Circle implements Shape {
-    private Color color; 
-
+public class Circle extends Shape {
     public Circle(Color color) {
-        this.color = color;
+        super(color);
     }
 
     @Override
-    public void draw(Graphics g, int width, int height) {
+    public void draw(Graphics g) {
         g.setColor(color);
-        int x = (width - 100) / 2;
-        int y = (height - 100) / 2;
+        int x = 100;
+        int y = 25;
+        
         g.fillOval(x, y, 100, 100);
     }
 }
