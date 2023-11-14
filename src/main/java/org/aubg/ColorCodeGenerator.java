@@ -67,7 +67,6 @@ public class ColorCodeGenerator {
         colorCodes.put("amber", "255, 191, 0");
         colorCodes.put("mauve", "224, 176, 255");
         colorCodes.put("periwinkle", "204, 204, 255");
-        colorCodes.put("ochre", "204, 119, 34");
         colorCodes.put("sienna", "136, 45, 23");
         colorCodes.put("cerulean", "0, 123, 167");
         colorCodes.put("tan", "255, 165, 79");

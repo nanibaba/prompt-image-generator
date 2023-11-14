@@ -78,6 +78,7 @@ public abstract class PatternRecognizer {
             Word2Vec dictVec
             ) {
             int maxEditDistance = 2; // Max allowable edit distance for spell checking
+            double maxCosSim = Double.NEGATIVE_INFINITY;
             String targetObject = "";
 
             for (String word : promptWords) {
@@ -86,7 +87,11 @@ public abstract class PatternRecognizer {
                 System.out.println("Corrected word: " + correctedWord);
 
                 // Find the most similar object within the cluster for each word
-                targetObject = cluster.findTargetObject(correctedWord);
+                double cosSim = cluster.similarity(correctedWord);
+                if (cosSim > maxCosSim) {
+                    maxCosSim = cosSim;
+                    targetObject = correctedWord;
+                }
             }
 
             // If a target object is found, remove the closest word from the prompt words

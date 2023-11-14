@@ -9,7 +9,6 @@ import java.util.List;
 
 public class ClusterInfo {
     private int id; // Unique identifier for the cluster
-    private List<String> objects; // The list of object names in the cluster
     private Word2Vec dictVec; // The dictionary vector model used by the cluster
     private INDArray centroid; // The centroid vector of the cluster
 
@@ -19,7 +18,6 @@ public class ClusterInfo {
         List<String> objects
         ) {
         this.id = id;
-        this.objects = objects;
         this.dictVec = dictVec;
 
         // Initialize an array to store the sum of all object vectors
@@ -42,12 +40,8 @@ public class ClusterInfo {
     public int getId() {
         return id;
     }
-
-    public List<String> getObjects() {
-        return objects;
-    }
-
-     public INDArray getCentroid() {
+    
+    public INDArray getCentroid() {
         return centroid;
     }
 

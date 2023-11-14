@@ -44,8 +44,8 @@ public class Prompter {
         Word2Vec dictVec = Word2VecLoader.loadDictVec();
 
         // Create shape and color clusters
-        ClusterInfo shapeCluster = PatternRecognizer.createCluster(dictVec, shapes, 1);
-        ClusterInfo colorCluster = PatternRecognizer.createCluster(dictVec, colors, 2);
+        ClusterInfo shapeCluster = new ClusterInfo(1, dictVec, shapes);
+        ClusterInfo colorCluster = new ClusterInfo(2, dictVec, colors);
 
         // Set up the main frame
         frame = new JFrame();
