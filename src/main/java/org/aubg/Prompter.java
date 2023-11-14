@@ -43,6 +43,10 @@ public class Prompter {
         // Load the Google News vector dictionary
         Word2Vec dictVec = Word2VecLoader.loadDictVec();
 
+        // Create shape and color clusters
+        ClusterInfo shapeCluster = PatternRecognizer.createCluster(dictVec, shapes, 1);
+        ClusterInfo colorCluster = PatternRecognizer.createCluster(dictVec, colors, 2);
+
         // Set up the main frame
         frame = new JFrame();
         frame.setBounds(100, 100, 450, 300);
@@ -110,7 +114,13 @@ public class Prompter {
                     Collection<String> promptWords = separatePromptWords(promptText);
 
                     // Find target shape from the prompt
-                    targetShape = PatternRecognizer.computeTargetObject("shape", promptWords, shapes, dictVec);
+                    targetShape = PatternRecognizer.computeTargetObject(
+                        "shape", 
+                        promptWords, 
+                        shapeCluster, 
+                        shapes, 
+                        dictVec
+                    );
                     System.out.println("Remaining prompt words: " + promptWords);
 
                     if (targetShape.isEmpty()) {
@@ -121,7 +131,13 @@ public class Prompter {
                         targetShape.substring(0, 1).toUpperCase() + 
                         targetShape.substring(1); 
                         // Find target color from the prompt
-                        targetColor = PatternRecognizer.computeTargetObject("color", promptWords, colors, dictVec);
+                        targetColor = PatternRecognizer.computeTargetObject(
+                            "color", 
+                            promptWords, 
+                            colorCluster,
+                            colors, 
+                            dictVec
+                        );
                         System.out.println("Remaining prompt words: " + promptWords);
 
                         if (!targetColor.isEmpty()) {

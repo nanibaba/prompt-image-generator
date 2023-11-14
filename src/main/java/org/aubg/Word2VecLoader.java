@@ -9,6 +9,9 @@ public abstract class Word2VecLoader {
 
     // Static method to load the Word2Vec model
     static Word2Vec loadDictVec() {
+        // Logging at the beginning of the loading process
+        System.out.println("Loading Word2vec model...");
+
         // Record the start time
         long startTime = System.currentTimeMillis();
 

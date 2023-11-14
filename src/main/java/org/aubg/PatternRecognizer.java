@@ -71,11 +71,13 @@ public abstract class PatternRecognizer {
 
     // Function to compute the target object from a collection of prompt words
     public static String computeTargetObject(
-            String type, Collection<String> promptWords, 
-            List<String> objects, Word2Vec dictVec) {
+            String type, 
+            Collection<String> promptWords, 
+            ClusterInfo cluster, 
+            List<String> objects, 
+            Word2Vec dictVec
+            ) {
             int maxEditDistance = 2; // Max allowable edit distance for spell checking
-            double cosSim = 0;
-            double maxCosSim = cosSim;
             String targetObject = "";
 
             for (String word : promptWords) {
@@ -83,15 +85,8 @@ public abstract class PatternRecognizer {
                 String correctedWord = findClosestObject(word, objects, maxEditDistance);
                 System.out.println("Corrected word: " + correctedWord);
 
-                for (String object : objects) {
-                    // Calculate the cosine similarity between the corrected word and object
-                    cosSim = dictVec.similarity(correctedWord, object);
-                    System.out.println("Cosine similarity: " + cosSim); 
-                    if (cosSim >= maxCosSim) {
-                        maxCosSim = cosSim;
-                        targetObject = object;
-                    }
-                }
+                // Find the most similar object within the cluster for each word
+                targetObject = cluster.findTargetObject(correctedWord);
             }
 
             // If a target object is found, remove the closest word from the prompt words
