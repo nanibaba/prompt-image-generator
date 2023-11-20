@@ -16,37 +16,50 @@ public class Pyramid extends Shape {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setColor(color);
 
-        // Hard-coded coordinates for the pyramid
-        int baseCenterX = 150; // X-coordinate of the base's center
-        int baseCenterY = 150; // Y-coordinate of the base's center
-        int baseHalfWidth = 50; // Half width of the base
-        int height = 50;       // Height of the pyramid
+        // Adjusted dimensions and position to fit the drawing panel
+        int x = 50; // Adjusted X-coordinate for better centering
+        int y = 75; // Adjusted Y-coordinate for better vertical positioning
+        int baseWidth = 80; // Adjusted width of the base of the pyramid
+        int baseHeight = 40; // Adjusted height of the parallelogram base
+        int slant = 20; // Adjusted slant distance for the parallelogram base
+        int pyramidHeight = 60; // Adjusted height of the pyramid from base to tip
 
-        // Base of the pyramid (a triangle)
-        Path2D.Double base = new Path2D.Double();
-        base.moveTo(baseCenterX - baseHalfWidth, baseCenterY);
-        base.lineTo(baseCenterX + baseHalfWidth, baseCenterY);
-        base.lineTo(baseCenterX, baseCenterY - height);
-        base.closePath();
+        // Tip of the pyramid
+        int tipX = x + baseWidth / 2 + slant / 2; // Adjusted X-coordinate of the tip
+        int tipY = y - pyramidHeight; // Adjusted Y-coordinate of the tip
 
-        // Draw the base
-        g2d.draw(base);
+        // Create a path for the pyramid
+        Path2D.Double path = new Path2D.Double();
 
-        // Side faces of the pyramid
-        Path2D.Double side1 = new Path2D.Double();
-        side1.moveTo(baseCenterX - baseHalfWidth, baseCenterY);
-        side1.lineTo(baseCenterX, baseCenterY + height);
-        side1.lineTo(baseCenterX, baseCenterY - height);
-        side1.closePath();
+        // Base of the pyramid (a parallelogram)
+        path.moveTo(x, y);
+        path.lineTo(x + baseWidth, y);
+        path.lineTo(x + baseWidth + slant, y + baseHeight);
+        path.lineTo(x + slant, y + baseHeight);
+        path.closePath();
 
-        Path2D.Double side2 = new Path2D.Double();
-        side2.moveTo(baseCenterX + baseHalfWidth, baseCenterY);
-        side2.lineTo(baseCenterX, baseCenterY + height);
-        side2.lineTo(baseCenterX, baseCenterY - height);
-        side2.closePath();
+        // Sides of the pyramid
+        // Side 1
+        path.moveTo(x, y);
+        path.lineTo(tipX, tipY);
+        path.lineTo(x + baseWidth, y);
 
-        // Draw the side faces
-        g2d.draw(side1);
-        g2d.draw(side2);
+        // Side 2
+        path.moveTo(x + baseWidth, y);
+        path.lineTo(tipX, tipY);
+        path.lineTo(x + baseWidth + slant, y + baseHeight);
+
+        // Side 3
+        path.moveTo(x + baseWidth + slant, y + baseHeight);
+        path.lineTo(tipX, tipY);
+        path.lineTo(x + slant, y + baseHeight);
+
+        // Side 4
+        path.moveTo(x + slant, y + baseHeight);
+        path.lineTo(tipX, tipY);
+        path.lineTo(x, y);
+
+        // Draw the pyramid
+        g2d.draw(path);
     }
 }
